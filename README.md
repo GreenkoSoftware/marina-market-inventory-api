@@ -24,7 +24,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <h3 align="center">copiloto-github.com/GreenkoSoftware/marina-market-inventory-api</h3>
+  <h3 align="center">https://github.com/GreenkoSoftware/marina-market-inventory-api</h3>
 </div>
 
 
