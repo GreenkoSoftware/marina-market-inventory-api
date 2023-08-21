@@ -51,8 +51,8 @@ func (service *PostgreSQLService) Init() error {
 		log.Fatal("[postgreSQLService] Could not load environment variables", err)
 	}
 	service.db = database
-
-	service.db.AutoMigrate(&models.User{}, &models.UserType{})
+//Si estas estructura no existen en la bd, crealas como tabla.
+	service.db.AutoMigrate(&models.Product{},&models.ProductStock{},&models.StockType{}, &models.ProductCategory{})
 	return nil
 }
 

@@ -36,6 +36,7 @@ func main() {
 	}
 
 	for _, service := range allServices {
+		// trunk-ignore(golangci-lint/errcheck)
 		service.Init()
 	}
 
@@ -43,6 +44,7 @@ func main() {
 	waitGroup.Add(len(allServices))
 
 	for _, service := range allServices {
+		// trunk-ignore(golangci-lint/errcheck)
 		go service.Execute(&waitGroup)
 	}
 	waitGroup.Wait()

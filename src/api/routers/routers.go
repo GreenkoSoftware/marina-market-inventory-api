@@ -16,7 +16,5 @@ func Setup(db *gorm.DB, gin *gin.Engine) {
 
 	//Add jwt middleware
 	protectedRouter.Use(middlewares.JwtTokenCheck)
-
-	repository.NewUserRoute(db, protectedRouter)
-	repository.NewAuthRoute(db, publicRouter)
+	repository.NewProductRoute(db,publicRouter)
 }

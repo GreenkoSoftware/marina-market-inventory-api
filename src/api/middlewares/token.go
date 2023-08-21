@@ -116,6 +116,7 @@ func VerifyToken(accessToken, SecrePublicKeyEnvName string) (*jwt.Token, error) 
 func DecodeToken(accessToken *jwt.Token) AccessToken {
 	var token AccessToken
 	stringify, _ := json.Marshal(&accessToken)
+	// trunk-ignore(golangci-lint/errcheck)
 	json.Unmarshal([]byte(stringify), &token)
 
 	return token
