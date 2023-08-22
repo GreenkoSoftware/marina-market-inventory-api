@@ -11,7 +11,7 @@ type Product struct {
 	Name string `json:"name" binding:"required"`
 	CostPrice float64 `json:"cost_price" binding:"required"`
 	NetPrice float64 `json:"net_price" binding:"required"`
-	Image string `json:"image"`
+	Image string `json:"image,omitempty"`
 	Code string `json:"code" binding:"required"`
 	ProductCategoryID int `json:"product_category_id" binding:"required"`
 	ProductCategory ProductCategory `gorm:"foreignKey:ProductCategoryID"`

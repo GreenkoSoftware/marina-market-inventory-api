@@ -69,3 +69,21 @@ func GetByParam(db *gorm.DB, fiel string, value string) (products *[]models.Prod
 
 	return products, nil
 }
+func PutBy(db *gorm.DB, field string, value string, product *models.Product) (err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		Preload("ProductCategory").
+		Preload("StockType").
+		WithContext(ctx).
+		Model(&product).
+		Update(field, value).Error
+
+	if results != nil {
+		return results
+	}
+
+	return nil
+}

@@ -26,4 +26,10 @@ func NewProductRoute( db *gorm.DB, group *gin.RouterGroup){
 			product_controller.Get(c, db),
 		)
 	})
+	/* Update product */
+	product.PUT("", func(c *gin.Context) {
+		function.CreateResponse(
+			product_controller.PutBy(c,db),
+		)
+	})
 }
