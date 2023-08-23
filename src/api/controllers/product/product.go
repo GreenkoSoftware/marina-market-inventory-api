@@ -58,7 +58,28 @@ func Get(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, e
 	}
 	return c, products, err
 }
+/* Get categories */
+func GetCategories(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		categories *[]models.ProductCategory
+	)
 
+	if categories, err = sql_event.GetCategories(db); err != nil {
+		return c, &err, nil
+	}
+	return c, categories, err 
+}
+/* Get Type Stock */
+func GetTypeStocks(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		typeStocks *[]models.StockType
+	)
+
+	if typeStocks, err = sql_event.GetTypeStocks(db); err != nil {
+		return c, &err, nil
+	}
+	return c, typeStocks, err 
+}
 /* Create New Stock product */
 func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var ( request models.ProductStock)

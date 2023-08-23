@@ -57,6 +57,36 @@ func Get(db *gorm.DB) (products *[]models.Product, err error) {
 
 	return products, nil
 }
+func GetCategories(db *gorm.DB) (categories *[]models.ProductCategory, err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		WithContext(ctx).
+		Find(&categories).Error
+
+	if results != nil {
+		return nil, results
+	}
+
+	return categories, nil
+}
+func GetTypeStocks(db *gorm.DB) (typeStocks *[]models.StockType, err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		WithContext(ctx).
+		Find(&typeStocks).Error
+
+	if results != nil {
+		return nil, results
+	}
+
+	return typeStocks, nil
+}
 func GetByParam(db *gorm.DB, fiel string, value string) (products *[]models.Product, err error) {
 
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
