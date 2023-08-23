@@ -77,6 +77,7 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 			if ProductName :=c.Query("name"); ProductName != "" {
 				field = "name"
 				value = ProductName
+				//db=db.Update(field, value)
 			}
 			if CostPrice :=c.Query("cost_price"); CostPrice != "" {
 				field = "cost_price"
@@ -126,4 +127,39 @@ func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interf
 	}else {
 		return c, &err, nil
 	}
+}
+/* Update Stock product */
+func PutStockBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+
+	if ProductIDstr := c.Query("id"); ProductIDstr != "" {
+
+		ProductID, err := strconv.Atoi(ProductIDstr)
+		if err != nil {
+			return c, nil, err
+		}
+		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
+			var  stockValue,stockMin int
+			/* Editar campos de producto */
+			if Stock :=c.Query("stock_max"); Stock != "" {
+				stockValue,err = strconv.Atoi(Stock)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if StockMin :=c.Query("stock_min"); StockMin != "" {
+				stockMin,err = strconv.Atoi(StockMin)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if err := sql_event.PutStockBy(db, stockValue,stockMin, ProductID); err != nil {
+				return c, &err, nil
+			} else {
+				return c, &constants.UpdateSuccess, err
+			}
+		}
+	}
+
+	return c, &err, nil
+
 }

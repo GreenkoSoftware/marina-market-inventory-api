@@ -11,10 +11,10 @@ import (
 func Setup(db *gorm.DB, gin *gin.Engine) {
 
 	// Public Routes
-	publicRouter := gin.Group("")
+	//publicRouter := gin.Group("")
 	protectedRouter := gin.Group("")
 
 	//Add jwt middleware
 	protectedRouter.Use(middlewares.JwtTokenCheck)
-	repository.NewProductRoute(db,publicRouter)
+	repository.NewProductRoute(db,protectedRouter)
 }
