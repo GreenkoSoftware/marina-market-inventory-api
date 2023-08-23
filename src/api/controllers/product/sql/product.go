@@ -103,12 +103,14 @@ func CreateProductStock(db *gorm.DB, stock models.ProductStock) (err error){
 	return nil
 }
 /* db, stockValue,stockMin, ProductID */
-func PutStockBy(db *gorm.DB, stockValue,stockMin int,ProductID int) (err error) {
+func PutStockBy(db *gorm.DB, stockValue,stockMin,ProductID int) (err error) {
 
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+
 	defer cancel()
 	results := db.
 		WithContext(ctx).
+		Table("product_stocks").
 		Where("product_id = ?",ProductID).
 		Update("stock_min",stockMin).
 		Update("stock",stockValue).Error
