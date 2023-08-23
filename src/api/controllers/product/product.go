@@ -115,3 +115,15 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 	return c, &err, nil
 
 }
+/* Create New Stock product */
+func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var ( request models.ProductStock)
+	if err = c.ShouldBindJSON(&request);err!=nil{
+		return c,nil,err
+	}
+	if err =  sql_event.CreateProductStock(db,request);err!=nil{
+		return c, constants.InsertSuccess, err
+	}else {
+		return c, &err, nil
+	}
+}

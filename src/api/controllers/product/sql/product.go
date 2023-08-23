@@ -12,7 +12,13 @@ import (
 func CreateProduct(db *gorm.DB, product models.Product) (err error){
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
-	results := db.WithContext(ctx).Create(&product)
+	results := db.WithContext(ctx).Omit("ProductStockID").Create(&product)
+	if results.Error != nil {
+		return results.Error
+	}
+	product.ProductStock.ProductID = product.ID
+	results = db.WithContext(ctx).Debug().Create(&product.ProductStock)
+
 	if results.Error != nil {
 		return results.Error
 	}
@@ -85,5 +91,14 @@ func PutBy(db *gorm.DB, field string, value string, product *models.Product) (er
 		return results
 	}
 
+	return nil
+}
+func CreateProductStock(db *gorm.DB, stock models.ProductStock) (err error){
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+	results := db.WithContext(ctx).Create(&stock)
+	if results.Error != nil {
+		return results.Error
+	}
 	return nil
 }

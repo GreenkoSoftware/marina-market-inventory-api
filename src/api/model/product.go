@@ -17,6 +17,7 @@ type Product struct {
 	ProductCategory ProductCategory `gorm:"foreignKey:ProductCategoryID"`
 	StockTypeID int  `json:"stock_type_id" binding:"required"`
 	StockType StockType `gorm:"foreignKey:StockTypeID"`
+	ProductStock ProductStock `gorm:"-" json:"product_stock"`
 }
 type ProductCategory struct {
 	gorm.Model
@@ -30,11 +31,9 @@ type StockType struct {
 
 type ProductStock struct {
 	gorm.Model
-	Stock int `json:"-"`
-	StockMin int `json:"-"`
-	ProductID int `json:"-"`
-	Product Product `gorm:"foreignKey:ProductID"`
-
+	Stock int `json:"stock" binding:"required"`
+	StockMin int  `json:"stock_min" binding:"required"`
+	ProductID uint `gorm:"foreignKey,unique" json:"product_id"`
 }
 func (product *Product) NormalizedProduct() {
 	product.Name = strings.ToLower(product.Name)

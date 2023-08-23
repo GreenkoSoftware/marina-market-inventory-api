@@ -14,6 +14,10 @@ func NewProductRoute( db *gorm.DB, group *gin.RouterGroup){
 	product.POST("/create",func( c *gin.Context){
 		function.CreateResponse( product_controller.Create(c,db))
 	})
+	/* Create stock */
+	product.POST("/stock",func( c *gin.Context){
+		function.CreateResponse( product_controller.CreateStock(c,db))
+	})
 	/*  Delete product */
 	product.DELETE("", func(c *gin.Context) {
 		function.CreateResponse(
