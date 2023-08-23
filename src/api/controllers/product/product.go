@@ -59,63 +59,6 @@ func Get(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, e
 	return c, products, err
 }
 
-func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
-	var (
-		product *models.Product
-	)
-
-	if ProductIDstr := c.Query("id"); ProductIDstr != "" {
-
-		ProductID, err := strconv.Atoi(ProductIDstr)
-		if err != nil {
-			return c, nil, err
-		}
-
-		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
-			var field, value string
-			/* Editar campos de producto */
-			if ProductName :=c.Query("name"); ProductName != "" {
-				field = "name"
-				value = ProductName
-				//db=db.Update(field, value)
-			}
-			if CostPrice :=c.Query("cost_price"); CostPrice != "" {
-				field = "cost_price"
-				value = CostPrice
-			}
-			if NetPrice :=c.Query("net_price"); NetPrice != "" {
-				field = "net_price"
-				value = NetPrice
-			}
-			if Image :=c.Query("image"); Image != "" {
-				field = "image"
-				value = Image
-			}
-			if Code :=c.Query("code"); Code != "" {
-				field = "code"
-				value = Code
-			}
-			if ProductCategoryID :=c.Query("product_category_id"); ProductCategoryID != "" {
-				field = "product_category_id"
-				value = ProductCategoryID
-			}
-			if StockTypeID :=c.Query("stock_type_id"); StockTypeID != "" {
-				field = "stock_type_id"
-				value = StockTypeID
-			}
-			product = &models.Product{}
-			product.ID = uint(ProductID)
-			if err := sql_event.PutBy(db, field, value, product); err != nil {
-				return c, &err, nil
-			} else {
-				return c, &constants.UpdateSuccess, err
-			}
-		}
-	}
-
-	return c, &err, nil
-
-}
 /* Create New Stock product */
 func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var ( request models.ProductStock)
@@ -153,6 +96,71 @@ func PutStockBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interfa
 				}
 			}
 			if err := sql_event.PutStockBy(db, stockValue,stockMin, ProductID); err != nil {
+				return c, &err, nil
+			} else {
+				return c, &constants.UpdateSuccess, err
+			}
+		}
+	}
+
+	return c, &err, nil
+
+}
+
+/* Update Product */
+func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		product *models.Product
+	)
+
+	if ProductIDstr := c.Query("id"); ProductIDstr != "" {
+
+		ProductID, err := strconv.Atoi(ProductIDstr)
+		if err != nil {
+			return c, nil, err
+		}
+
+		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
+			var productName,image,code string
+			var costPrice, netPrice float64
+			var productCategoryId, stockTypeId int
+			/* Editar campos de producto */
+			if ProductName :=c.Query("name"); ProductName != "" {
+				productName=ProductName
+			}
+			if CostPrice :=c.Query("cost_price"); CostPrice != "" {
+				costPrice, err = strconv.ParseFloat(CostPrice, 64)
+				if err != nil{
+					return c, nil, err
+				}
+			}
+			if NetPrice :=c.Query("net_price"); NetPrice != "" {
+				netPrice, err = strconv.ParseFloat(NetPrice, 64)
+				if err != nil{
+					return c, nil, err
+				}
+			}
+			if Image :=c.Query("image"); Image != "" {
+				image=Image
+			}
+			if Code :=c.Query("code"); Code != "" {
+				code=Code
+			}
+			if ProductCategoryID :=c.Query("product_category_id"); ProductCategoryID != "" {
+				productCategoryId,err = strconv.Atoi(ProductCategoryID)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if StockTypeID :=c.Query("stock_type_id"); StockTypeID != "" {
+				stockTypeId,err = strconv.Atoi(StockTypeID)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			product = &models.Product{}
+			product.ID = uint(ProductID)
+			if err := sql_event.PutBy(db,productName,costPrice,netPrice,image,code,productCategoryId, stockTypeId,ProductID); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err

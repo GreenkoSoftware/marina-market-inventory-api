@@ -75,24 +75,7 @@ func GetByParam(db *gorm.DB, fiel string, value string) (products *[]models.Prod
 
 	return products, nil
 }
-func PutBy(db *gorm.DB, field string, value string, product *models.Product) (err error) {
 
-	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
-	defer cancel()
-
-	results := db.
-		Preload("ProductCategory").
-		Preload("StockType").
-		WithContext(ctx).
-		Model(&product).
-		Update(field, value).Error
-
-	if results != nil {
-		return results
-	}
-
-	return nil
-}
 func CreateProductStock(db *gorm.DB, stock models.ProductStock) (err error){
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
@@ -114,6 +97,32 @@ func PutStockBy(db *gorm.DB, stockValue,stockMin,ProductID int) (err error) {
 		Where("product_id = ?",ProductID).
 		Update("stock_min",stockMin).
 		Update("stock",stockValue).Error
+
+	if results != nil {
+		return results
+	}
+
+	return nil
+}
+/* db,productName,costPrice,netPrice,image,code,productCategoryId, stockTypeId */
+func PutBy(db *gorm.DB, productName string,costPrice,netPrice float64,image,code string,productCategoryId, stockTypeId,ProductID int) (err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		Preload("ProductCategory").
+		Preload("StockType").
+		WithContext(ctx).
+		Table("products").
+		Where("id = ?",ProductID).
+		Update("name",productName).
+		Update("cost_price",costPrice).
+		Update("net_price",netPrice).
+		Update("image",image).
+		Update("code",code).
+		Update("product_category_id",productCategoryId).
+		Update("stock_type_id",stockTypeId).Error
 
 	if results != nil {
 		return results
