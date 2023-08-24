@@ -6,6 +6,7 @@ import (
 
 	"github.com/GreenkoSoftware/marina-market-inventory-api/src/api/common/sql"
 	models "github.com/GreenkoSoftware/marina-market-inventory-api/src/api/model"
+	"github.com/GreenkoSoftware/marina-market-inventory-api/src/utils"
 	"gorm.io/gorm"
 )
 
@@ -16,8 +17,8 @@ func CreateProduct(db *gorm.DB, product models.Product) (err error){
 	if results.Error != nil {
 		return results.Error
 	}
-	product.ProductStock.ProductID = product.ID
-	results = db.WithContext(ctx).Debug().Create(&product.ProductStock)
+	product.ProductStocks.ProductID = product.ID
+	results = db.WithContext(ctx).Debug().Create(&product.ProductStocks)
 
 	if results.Error != nil {
 		return results.Error
@@ -40,24 +41,39 @@ func Delete(db *gorm.DB, product models.Product) (err error) {
 	return nil
 }
 
-func Get(db *gorm.DB) (products *[]models.Product, err error) {
+func GetProduct(db *gorm.DB) (P *[]models.Product, err error) {
 
+	var Products *[]models.Product
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
 
 	results := db.
-		Preload("ProductCategory").
-		Preload("StockType").
+		Preload("ProductCategories").
+		Preload("StockTypes").
+		Preload("ProductStocks").
 		WithContext(ctx).
-		Find(&products).Error
+		Find(&Products).Error
 
 	if results != nil {
 		return nil, results
 	}
-
-	return products, nil
+	if !utils.HasData(*Products) {
+		return nil, nil
+	}
+	return Products, nil
 }
-func GetCategories(db *gorm.DB) (categories *[]models.ProductCategory, err error) {
+/* 
+Debug().
+		WithContext(ctx).
+		Table("products").
+		Preload("ProductCategory").
+		Preload("StockType").
+		Joins("inner join product_stocks on products.ID = product_stocks.product_id").
+*/
+
+
+
+func GetCategories(db *gorm.DB) (categories *[]models.ProductCategories, err error) {
 
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
@@ -72,7 +88,7 @@ func GetCategories(db *gorm.DB) (categories *[]models.ProductCategory, err error
 
 	return categories, nil
 }
-func GetTypeStocks(db *gorm.DB) (typeStocks *[]models.StockType, err error) {
+func GetTypeStocks(db *gorm.DB) (typeStocks *[]models.StockTypes, err error) {
 
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
@@ -106,7 +122,7 @@ func GetByParam(db *gorm.DB, fiel string, value string) (products *[]models.Prod
 	return products, nil
 }
 
-func CreateProductStock(db *gorm.DB, stock models.ProductStock) (err error){
+func CreateProductStock(db *gorm.DB, stock models.ProductStocks) (err error){
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
 	results := db.WithContext(ctx).Create(&stock)

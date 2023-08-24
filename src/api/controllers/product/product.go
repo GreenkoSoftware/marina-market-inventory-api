@@ -53,7 +53,7 @@ func Get(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, e
 			return c, products, err
 		}
 	}
-	if products, err = sql_event.Get(db); err != nil {
+	if products, err = sql_event.GetProduct(db); err != nil {
 		return c, &err, nil
 	}
 	return c, products, err
@@ -61,7 +61,7 @@ func Get(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, e
 /* Get categories */
 func GetCategories(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
-		categories *[]models.ProductCategory
+		categories *[]models.ProductCategories
 	)
 
 	if categories, err = sql_event.GetCategories(db); err != nil {
@@ -72,9 +72,8 @@ func GetCategories(c *gin.Context, db *gorm.DB) (context *gin.Context, data inte
 /* Get Type Stock */
 func GetTypeStocks(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
-		typeStocks *[]models.StockType
+		typeStocks *[]models.StockTypes
 	)
-
 	if typeStocks, err = sql_event.GetTypeStocks(db); err != nil {
 		return c, &err, nil
 	}
@@ -82,7 +81,7 @@ func GetTypeStocks(c *gin.Context, db *gorm.DB) (context *gin.Context, data inte
 }
 /* Create New Stock product */
 func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
-	var ( request models.ProductStock)
+	var ( request models.ProductStocks)
 	if err = c.ShouldBindJSON(&request);err!=nil{
 		return c,nil,err
 	}
