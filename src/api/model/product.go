@@ -35,7 +35,7 @@ type ProductStocks struct {
 	gorm.Model
 	Stock int `json:"stock"`
 	StockMin int  `json:"stock_min"`
-	ProductID uint `gorm:"foreignKey,unique" json:"product_id"`
+	ProductID uint `gorm:"foreignKey" json:"product_id"`
 }
 func (product *Product) NormalizedProduct() {
 	product.Name = strings.ToLower(product.Name)

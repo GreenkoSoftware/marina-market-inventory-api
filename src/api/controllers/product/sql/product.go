@@ -13,12 +13,15 @@ import (
 func CreateProduct(db *gorm.DB, product models.Product) (err error){
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
-	results := db.WithContext(ctx).Omit("ProductStockID").Create(&product)
+	results := db.WithContext(ctx).Create(&product)
 	if results.Error != nil {
 		return results.Error
-	}
-	product.ProductStocks.ProductID = product.ID
-	results = db.WithContext(ctx).Debug().Create(&product.ProductStocks)
+	}	
+	results = db.WithContext(ctx).Debug().Create(&models.ProductStocks{
+		ProductID: product.ID,
+		Stock:product.ProductStocks.Stock,
+		StockMin:product.ProductStocks.StockMin,
+	})
 
 	if results.Error != nil {
 		return results.Error
