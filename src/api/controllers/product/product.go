@@ -11,15 +11,17 @@ import (
 )
 
 func Create(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
-	var ( request models.Product)
-	if err = c.ShouldBindJSON(&request);err!=nil{
-		return c,nil,err
+	var (
+		request models.Product
+	)
+	if err = c.ShouldBindJSON(&request); err != nil {
+		return c, nil, err
 	}
 	request.NormalizedProduct()
 
-	if err =  sql_event.CreateProduct(db,request);err==nil{
+	if err = sql_event.CreateProduct(db, request); err == nil {
 		return c, &constants.InsertSuccess, err
-	}else {
+	} else {
 		return c, &err, nil
 	}
 }
@@ -59,6 +61,7 @@ func Get(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, e
 	}
 	return c, products, err
 }
+
 /* Get categories */
 func GetCategories(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
@@ -68,8 +71,9 @@ func GetCategories(c *gin.Context, db *gorm.DB) (context *gin.Context, data inte
 	if categories, err = sql_event.GetCategories(db); err != nil {
 		return c, &err, nil
 	}
-	return c, categories, err 
+	return c, categories, err
 }
+
 /* Get Type Stock */
 func GetTypeStocks(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
@@ -78,20 +82,24 @@ func GetTypeStocks(c *gin.Context, db *gorm.DB) (context *gin.Context, data inte
 	if typeStocks, err = sql_event.GetTypeStocks(db); err != nil {
 		return c, &err, nil
 	}
-	return c, typeStocks, err 
+	return c, typeStocks, err
 }
+
 /* Create New Stock product */
 func CreateStock(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
-	var ( request models.ProductStocks)
-	if err = c.ShouldBindJSON(&request);err!=nil{
-		return c,nil,err
+	var (
+		request models.ProductStocks
+	)
+	if err = c.ShouldBindJSON(&request); err != nil {
+		return c, nil, err
 	}
-	if err =  sql_event.CreateProductStock(db,request);err!=nil{
+	if err = sql_event.CreateProductStock(db, request); err != nil {
 		return c, constants.InsertSuccess, err
-	}else {
+	} else {
 		return c, &err, nil
 	}
 }
+
 /* Update Stock product */
 func PutStockBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 
@@ -102,21 +110,21 @@ func PutStockBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interfa
 			return c, nil, err
 		}
 		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
-			var  stockValue,stockMin int
+			var stockValue, stockMin int
 			/* Editar campos de producto */
-			if Stock :=c.Query("stock_max"); Stock != "" {
-				stockValue,err = strconv.Atoi(Stock)
+			if Stock := c.Query("stock_max"); Stock != "" {
+				stockValue, err = strconv.Atoi(Stock)
 				if err != nil {
 					return c, nil, err
 				}
 			}
-			if StockMin :=c.Query("stock_min"); StockMin != "" {
-				stockMin,err = strconv.Atoi(StockMin)
+			if StockMin := c.Query("stock_min"); StockMin != "" {
+				stockMin, err = strconv.Atoi(StockMin)
 				if err != nil {
 					return c, nil, err
 				}
 			}
-			if err := sql_event.PutStockBy(db, stockValue,stockMin, ProductID); err != nil {
+			if err := sql_event.PutStockBy(db, stockValue, stockMin, ProductID); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err
@@ -142,46 +150,51 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 		}
 
 		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
-			var productName,image,code string
-			var costPrice, netPrice float64
-			var productCategoryId, stockTypeId int
+			var productName, image, code string
+			var costPrice, netPrice, salePrice, productCategoryId, stockTypeId int
 			/* Editar campos de producto */
-			if ProductName :=c.Query("name"); ProductName != "" {
-				productName=ProductName
+			if ProductName := c.Query("name"); ProductName != "" {
+				productName = ProductName
 			}
-			if CostPrice :=c.Query("cost_price"); CostPrice != "" {
-				costPrice, err = strconv.ParseFloat(CostPrice, 64)
-				if err != nil{
-					return c, nil, err
-				}
-			}
-			if NetPrice :=c.Query("net_price"); NetPrice != "" {
-				netPrice, err = strconv.ParseFloat(NetPrice, 64)
-				if err != nil{
-					return c, nil, err
-				}
-			}
-			if Image :=c.Query("image"); Image != "" {
-				image=Image
-			}
-			if Code :=c.Query("code"); Code != "" {
-				code=Code
-			}
-			if ProductCategoryID :=c.Query("product_category_id"); ProductCategoryID != "" {
-				productCategoryId,err = strconv.Atoi(ProductCategoryID)
+			if CostPrice := c.Query("cost_price"); CostPrice != "" {
+				costPrice, err = strconv.Atoi(CostPrice)
 				if err != nil {
 					return c, nil, err
 				}
 			}
-			if StockTypeID :=c.Query("stock_type_id"); StockTypeID != "" {
-				stockTypeId,err = strconv.Atoi(StockTypeID)
+			if NetPrice := c.Query("net_price"); NetPrice != "" {
+				netPrice, err = strconv.Atoi(NetPrice)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if SalePrice := c.Query("sale_price"); SalePrice != "" {
+				salePrice, err = strconv.Atoi(SalePrice)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if Image := c.Query("image"); Image != "" {
+				image = Image
+			}
+			if Code := c.Query("code"); Code != "" {
+				code = Code
+			}
+			if ProductCategoryID := c.Query("product_category_id"); ProductCategoryID != "" {
+				productCategoryId, err = strconv.Atoi(ProductCategoryID)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if StockTypeID := c.Query("stock_type_id"); StockTypeID != "" {
+				stockTypeId, err = strconv.Atoi(StockTypeID)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			product = &models.Product{}
 			product.ID = uint(ProductID)
-			if err := sql_event.PutBy(db,productName,costPrice,netPrice,image,code,productCategoryId, stockTypeId,ProductID); err != nil {
+			if err := sql_event.PutBy(db, productName, costPrice, netPrice, salePrice, image, code, productCategoryId, stockTypeId, ProductID); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err
