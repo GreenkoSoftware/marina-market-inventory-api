@@ -16,5 +16,8 @@ func Setup(db *gorm.DB, gin *gin.Engine) {
 
 	//Add jwt middleware
 	protectedRouter.Use(middlewares.JwtTokenCheck)
-	repository.NewProductRoute(db,protectedRouter)
+	repository.NewProductRoute(db, protectedRouter)
+	repository.NewSaleRepository(db, protectedRouter)
+	repository.NewPaymentRepository(db, protectedRouter)
+	repository.NewVoucherRepository(db, protectedRouter)
 }

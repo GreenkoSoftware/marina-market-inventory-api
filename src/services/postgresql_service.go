@@ -53,7 +53,17 @@ func (service *PostgreSQLService) Init() error {
 	service.db = database
 	//Si estas estructura no existen en la bd, crealas como tabla.
 	// trunk-ignore(golangci-lint/errcheck)
-	service.db.AutoMigrate(&models.Product{}, &models.ProductStocks{}, &models.StockTypes{}, &models.ProductCategories{}, &models.ProductOffer{})
+	service.db.AutoMigrate(
+		&models.Product{},
+		&models.ProductStocks{},
+		&models.StockTypes{},
+		&models.ProductCategories{},
+		&models.ProductOffer{},
+		&models.VoucherType{},
+		&models.PaymentType{},
+		&models.SalesReceipt{},
+		&models.Sale{},
+	)
 	return nil
 }
 
