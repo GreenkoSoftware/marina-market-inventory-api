@@ -41,3 +41,11 @@ type ProductStocks struct {
 func (product *Product) NormalizedProduct() {
 	product.Name = strings.ToLower(product.Name)
 }
+
+type ProductOffer struct {
+	gorm.Model
+	Quantity  int      `json:"quantity" binding:"required"`
+	UnitPrice int      `json:"unit_price" binding:"required"`
+	ProductID int      `json:"product_id"`
+	Product   *Product `json:"product"`
+}

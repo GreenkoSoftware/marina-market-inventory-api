@@ -66,6 +66,23 @@ func GetProduct(db *gorm.DB) (P *[]models.Product, err error) {
 	}
 	return Products, nil
 }
+func GetProductByID(db *gorm.DB, ID int) (P *models.Product, err error) {
+
+	var Products *models.Product
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		WithContext(ctx).
+		Where("ID = ?", ID).
+		Find(&Products).Error
+
+	if results != nil {
+		return nil, results
+	}
+
+	return Products, nil
+}
 
 /*
 Debug().
@@ -178,6 +195,70 @@ func PutBy(db *gorm.DB, productName string, costPrice, netPrice, salePrice int, 
 
 	if results != nil {
 		return results
+	}
+
+	return nil
+}
+
+func CreateProductOffer(db *gorm.DB, product models.ProductOffer) (err error) {
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+	results := db.WithContext(ctx).Create(&product)
+	if results.Error != nil {
+		return results.Error
+	}
+	return nil
+}
+
+func GetProductOffer(db *gorm.DB) (P *[]models.ProductOffer, err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		Preload("Product").
+		WithContext(ctx).
+		Find(&P).Error
+
+	if results != nil {
+		return nil, results
+	}
+	if !utils.HasData(*P) {
+		return nil, nil
+	}
+	return
+}
+func GetProductOfferByID(db *gorm.DB, id int) (P *[]models.ProductOffer, err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		Preload("Product").
+		WithContext(ctx).
+		Where("product_id = ?", id).
+		Find(&P).Error
+
+	if results != nil {
+		return nil, results
+	}
+	if !utils.HasData(*P) {
+		return nil, nil
+	}
+	return
+}
+
+func DeleteOffer(db *gorm.DB, product models.ProductOffer) (err error) {
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+
+	results := db.
+		WithContext(ctx).
+		Debug().
+		Delete(&product)
+
+	if results.Error != nil {
+		return results.Error
 	}
 
 	return nil

@@ -1,6 +1,7 @@
 package product
 
 import (
+	"fmt"
 	"strconv"
 
 	constants "github.com/GreenkoSoftware/marina-market-inventory-api/src/api/common/constant"
@@ -25,6 +26,7 @@ func Create(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}
 		return c, &err, nil
 	}
 }
+
 func Delete(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
 		request models.Product
@@ -205,3 +207,79 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 	return c, &err, nil
 
 }
+
+func CreateOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		request models.ProductOffer
+	)
+
+	err = c.ShouldBindJSON(&request)
+	if err != nil {
+		return c, nil, err
+	}
+
+	_, err = sql_event.GetProductByID(db, request.ProductID)
+	if err != nil {
+		return c, nil, constants.ErrorProductNotExist
+	}
+
+	err = sql_event.CreateProductOffer(db, request)
+	if err != nil {
+		return c, nil, err
+	}
+
+	return c, &constants.InsertSuccess, nil
+}
+
+func GetOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		products *[]models.ProductOffer
+	)
+
+	if products, err = sql_event.GetProductOffer(db); err != nil {
+		return c, &err, nil
+	}
+	return c, products, nil
+}
+
+func GetOfferByID(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		products *[]models.ProductOffer
+	)
+	ProductIDstr := c.Params.ByName("id")
+	if ProductIDstr == "" {
+		return c, nil, constants.ErrorProductNotProductID
+	}
+
+	id, err := strconv.Atoi(ProductIDstr)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if products, err = sql_event.GetProductOfferByID(db, id); err != nil {
+		return c, &err, nil
+	}
+	return c, products, err
+}
+
+func DeleteOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		request models.ProductOffer
+	)
+
+	ProductIdstr := c.Query("id")
+	ProductID, err := strconv.Atoi(ProductIdstr)
+	if err != nil {
+		return c, nil, err
+	}
+
+	request.ID = uint(ProductID)
+	if err = sql_event.DeleteOffer(db, request); err != nil {
+		return c, nil, err
+	} else {
+		return c, &constants.DeleteSuccess, nil
+	}
+}
+
+//transform string into int golang?

@@ -51,9 +51,9 @@ func (service *PostgreSQLService) Init() error {
 		log.Fatal("[postgreSQLService] Could not load environment variables", err)
 	}
 	service.db = database
-//Si estas estructura no existen en la bd, crealas como tabla.
+	//Si estas estructura no existen en la bd, crealas como tabla.
 	// trunk-ignore(golangci-lint/errcheck)
-	service.db.AutoMigrate(&models.Product{},&models.ProductStocks{},&models.StockTypes{}, &models.ProductCategories{})
+	service.db.AutoMigrate(&models.Product{}, &models.ProductStocks{}, &models.StockTypes{}, &models.ProductCategories{}, &models.ProductOffer{})
 	return nil
 }
 
