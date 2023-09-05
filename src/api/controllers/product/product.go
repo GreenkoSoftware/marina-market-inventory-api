@@ -141,7 +141,7 @@ func PutStockBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interfa
 /* Update Product */
 func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
-		product *models.Product
+		productStocks *models.ProductStocks
 	)
 
 	if ProductIDstr := c.Query("id"); ProductIDstr != "" {
@@ -152,51 +152,66 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 		}
 
 		if ProductIDstr := c.Query("id"); ProductIDstr != "" {
-			var productName, image, code string
-			var costPrice, netPrice, salePrice, productCategoryId, stockTypeId int
+
+			Product, err := sql_event.GetProductByID(db, ProductID)
+			if err != nil {
+				return c, nil, constants.ErrorProductNotExist
+			}
+
 			/* Editar campos de producto */
 			if ProductName := c.Query("name"); ProductName != "" {
-				productName = ProductName
+				Product.Name = ProductName
 			}
 			if CostPrice := c.Query("cost_price"); CostPrice != "" {
-				costPrice, err = strconv.Atoi(CostPrice)
+				Product.CostPrice, err = strconv.Atoi(CostPrice)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			if NetPrice := c.Query("net_price"); NetPrice != "" {
-				netPrice, err = strconv.Atoi(NetPrice)
+				Product.NetPrice, err = strconv.Atoi(NetPrice)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			if SalePrice := c.Query("sale_price"); SalePrice != "" {
-				salePrice, err = strconv.Atoi(SalePrice)
+				Product.SalePrice, err = strconv.Atoi(SalePrice)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			if Image := c.Query("image"); Image != "" {
-				image = Image
+				Product.Image = Image
 			}
 			if Code := c.Query("code"); Code != "" {
-				code = Code
+				Product.Code = Code
 			}
 			if ProductCategoryID := c.Query("product_category_id"); ProductCategoryID != "" {
-				productCategoryId, err = strconv.Atoi(ProductCategoryID)
+				Product.ProductCategoriesID, err = strconv.Atoi(ProductCategoryID)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			if StockTypeID := c.Query("stock_type_id"); StockTypeID != "" {
-				stockTypeId, err = strconv.Atoi(StockTypeID)
+				Product.StockTypesID, err = strconv.Atoi(StockTypeID)
 				if err != nil {
 					return c, nil, err
 				}
 			}
-			product = &models.Product{}
-			product.ID = uint(ProductID)
-			if err := sql_event.PutBy(db, productName, costPrice, netPrice, salePrice, image, code, productCategoryId, stockTypeId, ProductID); err != nil {
+			if StockMin := c.Query("stock_min"); StockMin != "" {
+				Product.ProductStocks.StockMin, err = strconv.Atoi(StockMin)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if Stock := c.Query("stock"); Stock != "" {
+				Product.ProductStocks.Stock, err = strconv.Atoi(Stock)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			productStocks = &Product.ProductStocks
+			if err := sql_event.PutBy(db, ProductID, Product, productStocks); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err
