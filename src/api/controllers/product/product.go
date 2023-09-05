@@ -186,18 +186,6 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 			if Code := c.Query("code"); Code != "" {
 				Product.Code = Code
 			}
-			if ProductCategoryID := c.Query("product_category_id"); ProductCategoryID != "" {
-				Product.ProductCategoriesID, err = strconv.Atoi(ProductCategoryID)
-				if err != nil {
-					return c, nil, err
-				}
-			}
-			if StockTypeID := c.Query("stock_type_id"); StockTypeID != "" {
-				Product.StockTypesID, err = strconv.Atoi(StockTypeID)
-				if err != nil {
-					return c, nil, err
-				}
-			}
 			if StockMin := c.Query("stock_min"); StockMin != "" {
 				Product.ProductStocks.StockMin, err = strconv.Atoi(StockMin)
 				if err != nil {
@@ -210,8 +198,21 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 					return c, nil, err
 				}
 			}
+			if ProductCategoryID := c.Query("product_category_id"); ProductCategoryID != "" {
+				Product.ProductCategoriesID, err = strconv.Atoi(ProductCategoryID)
+				if err != nil {
+					return c, nil, err
+				}
+			}
+			if StockTypeID := c.Query("stock_type_id"); StockTypeID != "" {
+				Product.StockTypesID, err = strconv.Atoi(StockTypeID)
+				if err != nil {
+					return c, nil, err
+				}
+			}
 			productStocks = &Product.ProductStocks
-			if err := sql_event.PutBy(db, ProductID, Product, productStocks); err != nil {
+
+			if err := sql_event.PutBy(db, ProductID, Product, productStocks, Product.StockTypesID); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err
