@@ -13,6 +13,7 @@ func CreateSalesReceipt(db *gorm.DB, sale models.Sale) (err error) {
 	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
 	defer cancel()
 
+	sale.Date = time.Now()
 	results := db.
 		WithContext(ctx).
 		Create(&sale)

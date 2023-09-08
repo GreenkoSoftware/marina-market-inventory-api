@@ -13,7 +13,10 @@ require (
 	gorm.io/gorm v1.25.3
 )
 
+require github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
+
 require (
+	github.com/360EntSecGroup-Skylar/excelize v1.4.1
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect

@@ -278,3 +278,20 @@ func DeleteOffer(db *gorm.DB, product models.ProductOffer) (err error) {
 
 	return nil
 }
+
+func GetCategoriesByName(db *gorm.DB, categoryName string) (categories *models.ProductCategories, err error) {
+
+	var ctx, cancel = context.WithTimeout(context.TODO(), 50*time.Second)
+	defer cancel()
+
+	results := db.
+		WithContext(ctx).
+		Where("name = ?", categoryName).
+		Find(&categories).Error
+
+	if results != nil {
+		return nil, results
+	}
+
+	return categories, nil
+}
