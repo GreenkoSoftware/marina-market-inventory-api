@@ -212,7 +212,7 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 			}
 			productStocks = &Product.ProductStocks
 
-			if err := sql_event.PutBy(db, ProductID, Product, productStocks, Product.StockTypesID); err != nil {
+			if err := sql_event.PutBy(db, ProductID, Product, productStocks, Product.StockTypesID, Product.ProductCategoriesID); err != nil {
 				return c, &err, nil
 			} else {
 				return c, &constants.UpdateSuccess, err
