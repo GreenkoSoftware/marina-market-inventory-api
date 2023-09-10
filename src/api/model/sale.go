@@ -32,6 +32,6 @@ type SalesReceipt struct {
 	Product    Product `gorm:"foreignKey:ProductID"`
 	SaleID     int     `json:"sale_id"`
 	Sale       Sale    `gorm:"foreignKey:SaleID"`
-	Quantity   int     `json:"quantity"`
+	Quantity   float64 `json:"quantity"`
 	TotalPrice int     `json:"total_price"`
 }

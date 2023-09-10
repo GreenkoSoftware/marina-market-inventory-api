@@ -25,7 +25,7 @@ func CreateSalesReceipt(db *gorm.DB, sale models.Sale) (err error) {
 	return nil
 }
 
-func DiscountStock(db *gorm.DB, productID int, amountToSubtract int) (err error) {
+func DiscountStock(db *gorm.DB, productID int, amountToSubtract float64) (err error) {
 
 	var product models.Product
 	if err := db.Preload("ProductStocks").First(&product, productID).Error; err != nil {

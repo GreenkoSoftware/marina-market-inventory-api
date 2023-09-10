@@ -187,13 +187,13 @@ func PutBy(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{},
 				Product.Code = Code
 			}
 			if StockMin := c.Query("stock_min"); StockMin != "" {
-				Product.ProductStocks.StockMin, err = strconv.Atoi(StockMin)
+				Product.ProductStocks.StockMin, err = strconv.ParseFloat(StockMin, 64)
 				if err != nil {
 					return c, nil, err
 				}
 			}
 			if Stock := c.Query("stock"); Stock != "" {
-				Product.ProductStocks.Stock, err = strconv.Atoi(Stock)
+				Product.ProductStocks.Stock, err = strconv.ParseFloat(Stock, 64)
 				if err != nil {
 					return c, nil, err
 				}
