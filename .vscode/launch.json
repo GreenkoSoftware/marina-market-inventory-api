@@ -13,11 +13,11 @@
                 "PORT": "8080",
                 "JWT":"greenko",
                 //COP
-                "DB_USERNAME":"postgres",
-                "DB_PORT":"5456",
-                "DB_PASS":"9Z2DnFoH0jSkXdkV1Nuu",
+                "DB_USERNAME":"fl0user",
+                "DB_PORT":"5432",
+                "DB_PASS":"egHfudA21Ryr",
                 "DB_NAME":"marina-market",
-                "DB_HOST":"containers-us-west-122.railway.app",
+                "DB_HOST":"ep-young-moon-16410021.us-east-2.aws.neon.tech",
             },
             "args": []
         }
