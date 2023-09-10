@@ -284,7 +284,7 @@ func DeleteOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interf
 		request models.ProductOffer
 	)
 
-	ProductIdstr := c.Query("id")
+	ProductIdstr := c.Params.ByName("id")
 	ProductID, err := strconv.Atoi(ProductIdstr)
 	if err != nil {
 		return c, nil, err
