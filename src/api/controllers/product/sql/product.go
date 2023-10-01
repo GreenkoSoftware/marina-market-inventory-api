@@ -295,3 +295,12 @@ func GetCategoriesByName(db *gorm.DB, categoryName string) (categories *models.P
 
 	return categories, nil
 }
+func CreateCategoryProduct(db *gorm.DB, category models.ProductCategories) (err error) {
+	var ctx, cancel = context.WithTimeout(context.TODO(), 10*time.Second)
+	defer cancel()
+	results := db.WithContext(ctx).Create(&category)
+	if results.Error != nil {
+		return results.Error
+	}
+	return nil
+}

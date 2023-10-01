@@ -41,6 +41,9 @@ type ProductStocks struct {
 func (product *Product) NormalizedProduct() {
 	product.Name = strings.ToLower(product.Name)
 }
+func (category *ProductCategories) NormalizedCategory() {
+	category.Name = strings.ToUpper(category.Name)
+}
 
 type ProductOffer struct {
 	gorm.Model

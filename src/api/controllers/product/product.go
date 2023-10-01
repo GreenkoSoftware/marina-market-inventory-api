@@ -247,6 +247,22 @@ func CreateOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interf
 	return c, &constants.InsertSuccess, nil
 }
 
+func CreateCategory(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
+	var (
+		request models.ProductCategories
+	)
+
+	if err = c.ShouldBindJSON(&request); err != nil {
+		return c, nil, err
+	}
+	request.NormalizedCategory()
+	if err = sql_event.CreateCategoryProduct(db, request); err == nil {
+		return c, &constants.InsertSuccess, err
+	} else {
+		return c, &err, nil
+	}
+}
+
 func GetOffer(c *gin.Context, db *gorm.DB) (context *gin.Context, data interface{}, err error) {
 	var (
 		products *[]models.ProductOffer

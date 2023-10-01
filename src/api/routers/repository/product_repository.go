@@ -32,6 +32,12 @@ func NewProductRoute(db *gorm.DB, group *gin.RouterGroup) {
 			product_controller.GetCategories(c, db),
 		)
 	})
+	/* Create Category*/
+	product.POST("/create/category", func(c *gin.Context) {
+		function.CreateResponse(
+			product_controller.CreateCategory(c, db),
+		)
+	})
 	/* Get Type Stocks */
 	product.GET("/type-stock", func(c *gin.Context) {
 		function.CreateResponse(
